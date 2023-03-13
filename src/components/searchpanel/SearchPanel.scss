@@ -1,0 +1,18 @@
+.SearchPanel {
+    padding: 0;
+
+    &_search {
+        border-bottom: 1px solid lightgray;
+        display: block;
+    }
+
+    &_searchbar {
+        display: block;
+        height: 60px;
+    }
+
+    &_button {
+        display: block;
+        height: 60px;
+    }
+}

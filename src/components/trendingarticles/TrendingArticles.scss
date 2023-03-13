@@ -1,0 +1,13 @@
+.TrendingArticles {
+  padding: 15px 35px;
+  border-right: darkgrey solid 1px;
+  border-bottom: darkgrey solid 1px;
+  background-color: white;
+
+  &_header {
+    color: black;
+    text-align: left;
+    line-height: 30px;
+    margin: 0 0 10px 0;
+  }
+}

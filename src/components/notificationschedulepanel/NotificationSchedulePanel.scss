@@ -1,0 +1,33 @@
+.NotificationSchedulePanel {
+    padding: 15px;
+    border-left: solid darkgrey 1px;
+    border-bottom: solid darkgrey 1px;
+    background-color: white;
+
+    &_header {
+        color: black;
+        text-align: left;
+        line-height: 30px;
+        margin: 0 0 10px 20px;
+    }
+}
+
+.NotificationSchedule {
+    display: block;
+    clear: both;
+
+    &_icon {
+        display: inline-block;
+        float: left;
+        width: 20%;
+    }
+
+    &_data {
+        display: inline-block;
+        text-align: left;
+        width: 80%;
+        padding: 0;
+        margin: 0;
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,17 @@
+.MainContent {
+    width: 50%;
+    background-color: white;
+    display: inline-block;
+    float: left;
+
+    &_wrapper {
+        //width: 50%;
+        border-left: darkgrey 1px solid;
+        border-right: darkgrey 1px solid;
+        border-bottom: darkgrey 1px solid;
+    }
+
+    &_selector {
+        border-bottom: darkgrey 1px solid;
+    }
+}

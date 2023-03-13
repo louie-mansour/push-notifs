@@ -1,0 +1,43 @@
+.Article {
+  display: block;
+  border-bottom: whitesmoke 1px solid;
+  padding: 15px 15px 7px 15px;
+
+  &--mini {
+    border-bottom: none;
+    padding: 0;
+  }
+
+  &_keyword {
+    display: inline-block;
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    color: darkgrey;
+  }
+
+  &_source {
+    display: block;
+    overflow: clip;
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    color: darkgrey;
+  }
+
+  &_title {
+    display: inline-block;
+    clear: both;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+
+    &--mini {
+      overflow: clip;
+    }
+  }
+}

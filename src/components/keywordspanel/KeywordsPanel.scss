@@ -1,0 +1,22 @@
+.KeywordsPanel {
+    padding: 15px;
+    border-left: solid darkgrey 1px;
+    border-bottom: solid darkgrey 1px;
+    position: sticky;
+    top: 72px;
+    background-color: white;
+
+    &_header {
+        color: black;
+        text-align: left;
+        line-height: 30px;
+        margin: 0 0 10px 20px;
+    }
+
+    &_manageSettings {
+        margin: 0;
+        padding: 20px 0;
+        display: block;
+        clear: both;
+    }
+}

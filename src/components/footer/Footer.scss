@@ -1,0 +1,13 @@
+.Footer {
+    height:100px;
+    width: 100%;
+    background-color: pink;
+    position: static;
+    clear: both;
+
+    &_text {
+        color: #eeeedf;
+        text-align:center;
+        line-height:100px;
+    }
+}
