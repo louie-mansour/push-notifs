@@ -1,7 +1,7 @@
-import {User} from '../domain/User';
-import {Pool} from 'pg';
-import {DatabaseError} from '../error/DatabaseError';
-import {Injectable} from "@nestjs/common";
+import { User } from '../domain/User';
+import { Pool } from 'pg';
+import { DatabaseError } from '../error/DatabaseError';
+import { Injectable } from '@nestjs/common';
 
 interface PostgresConfig {
   user: string;

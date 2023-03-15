@@ -1,20 +1,17 @@
-import {Controller, Post} from '@nestjs/common';
-import {ArticleUseCase} from "../usecase/ArticleUseCase";
+import { Controller, Get, Post, Query } from '@nestjs/common';
+import { ArticleUseCase } from '../usecase/ArticleUseCase';
+import { Article, ArticleBulkResult } from '../domain/Article';
 
 @Controller()
 export class ArticleController {
   constructor(private readonly articleUseCase: ArticleUseCase) {}
   @Post('/articles/load')
-  async loadArticles(): Promise<String> {
+  async loadArticles(): Promise<ArticleBulkResult> {
     return await this.articleUseCase.loadArticles();
   }
 
-  // @Get('/articles/search')
-  // async searchArticles(@Query('q') query): Promise<User> {
-  //   const newUser = new User({
-  //     ...user,
-  //     id: userId,
-  //   });
-  //   return await this.userUseCase.updateUser(newUser);
-  // }
+  @Get('/articles/search')
+  async searchArticles(@Query('q') query): Promise<Article[]> {
+    return await this.articleUseCase.searchArticles(query);
+  }
 }
