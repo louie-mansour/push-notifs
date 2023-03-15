@@ -1,7 +1,7 @@
-import { User } from '../domain/User';
-import { Pool } from 'pg';
-import { DatabaseError } from '../error/DatabaseError';
-import { migrate } from 'postgres-migrations';
+import {User} from '../domain/User';
+import {Pool} from 'pg';
+import {DatabaseError} from '../error/DatabaseError';
+import {Injectable} from "@nestjs/common";
 
 interface PostgresConfig {
   user: string;
@@ -11,18 +11,17 @@ interface PostgresConfig {
   port: number;
 }
 
+@Injectable()
 export class PostgresqlRepo {
   private readonly pool: Pool;
-  constructor(config: PostgresConfig) {
-    this.pool = new Pool(config);
-  }
-
-  public async migrate(migrationDirectory: string) {
-    try {
-      await migrate({ client: this.pool }, migrationDirectory);
-    } catch (e) {
-      console.log('Error migrating database');
-    }
+  constructor() {
+    this.pool = new Pool({
+      user: 'push_notifs',
+      host: 'db',
+      database: 'push_notifs',
+      password: 'push_notifs',
+      port: 5432,
+    });
   }
 
   public async readUser(userId: string): Promise<User> {

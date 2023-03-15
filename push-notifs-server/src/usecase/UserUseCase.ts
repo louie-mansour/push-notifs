@@ -1,6 +1,8 @@
 import { User } from '../domain/User';
 import { PostgresqlRepo } from '../repo/PostgresqlRepo';
+import {Injectable} from "@nestjs/common";
 
+@Injectable()
 export class UserUseCase {
   constructor(private readonly postgresqlRepo: PostgresqlRepo) {}
 

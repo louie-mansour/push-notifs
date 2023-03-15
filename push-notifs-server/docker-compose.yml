@@ -1,26 +1,9 @@
-version: "2"
+version: "3"
 services:
-  dm-migration:
-    depends_on:
-      - db
-    build: .
-    volumes:
-      - .:/app
-#    ports:
-#      - "4000:4000"
-#      - "9229:9229"
-    command: "npm run migrate"
-    restart: on-failure
-    environment:
-      DB_HOST: db
-      DB_USER: push_notifs
-      DB_PASSWORD: push_notifs
-      DB_DATABASE: push_notifs
-      DB_PORT: 5432
-
   app:
     depends_on:
       - db
+      - elastic
     build: .
     volumes:
       - .:/app
@@ -36,6 +19,21 @@ services:
       DB_DATABASE: push_notifs
       DB_PORT: 5432
 
+  db-migration:
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - .:/app
+    command: "npm run migrate:db"
+    restart: on-failure
+    environment:
+      DB_HOST: db
+      DB_USER: push_notifs
+      DB_PASSWORD: push_notifs
+      DB_DATABASE: push_notifs
+      DB_PORT: 5432
+
   db:
     image: postgres:15.2
     restart: always
@@ -43,3 +41,23 @@ services:
       POSTGRES_USER: push_notifs
       POSTGRES_PASSWORD: push_notifs
       POSTGRES_DB: push_notifs
+    ports:
+      - "5432:5432"
+
+  elastic-migration:
+    depends_on:
+      - elastic
+    build: .
+    volumes:
+      - .:/app
+    command: "npm run migrate:elastic"
+    restart: on-failure
+
+  elastic:
+    image: elasticsearch:7.17.9
+    restart: always
+    environment:
+      discovery.type: single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"

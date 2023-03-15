@@ -2,6 +2,11 @@ import { InvalidInputError } from '../error/InvalidInputError';
 import { v4 as uuidv4 } from 'uuid';
 
 export class User {
+  readonly email: string;
+  readonly name: string;
+  readonly keywords: string[];
+  readonly id: string | undefined;
+  readonly phone: string | undefined;
   constructor(user: {
     id: string | undefined;
     name: string;
@@ -15,16 +20,11 @@ export class User {
     this.id = user.id || uuidv4();
     this.phone = this.validatePhone(user.phone);
   }
-  email: string;
-  name: string;
-  keywords: string[];
-  id: string | undefined;
-  phone: string | undefined;
 
   private validateEmail(email: string): string {
     if (!User.emailRegex.test(email)) {
       throw new InvalidInputError(
-        `email '${email}' does not follow regex pattern '${User.regexPattern}'`,
+        `email '${email}' does not follow regex pattern '${User.emailRegexPattern}'`,
       );
     }
     return email;
@@ -52,7 +52,7 @@ export class User {
     return phoneNumber;
   }
 
-  private static regexPattern =
+  private static emailRegexPattern =
     "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-  private static emailRegex = new RegExp(User.regexPattern);
+  private static emailRegex = new RegExp(User.emailRegexPattern);
 }
