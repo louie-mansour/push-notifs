@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "951da786-dfe2-434e-8321-52f0aca87256",
+		"name": "Push Notifs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1353986"
+	},
+	"item": [
+		{
+			"name": "ElasticSearch tools",
+			"item": [
+				{
+					"name": "Create articles index",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"settings\": {\n        \"number_of_shards\": 1,\n        \"number_of_replicas\": 1,\n        \"index.mapping.coerce\": false\n    },\n    \"mappings\": {\n        \"dynamic\": \"strict\",\n        \"numeric_detection\": false,\n        \"date_detection\": false,\n        \"properties\": {\n            \"title\": { \"type\": \"text\" },\n            \"url\": { \"type\": \"keyword\", \"norms\": false, \"index\": false },\n            \"source\": { \"type\": \"keyword\" }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get articles index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get HackerNews articles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"term\": {\n      \"source\": {\n        \"value\": \"HackerNews\"\n      }\n    }\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/articles/_search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"articles",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": {\n    \"match\": {\n      \"title\": \"HackerNews\"\n    }\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/articles/_search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"articles",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Api",
+			"item": [
+				{
+					"name": "Healthcheck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load articles",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/articles/load",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"articles",
+								"load"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search articles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/articles/search?q=pixel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"articles",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pixel"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

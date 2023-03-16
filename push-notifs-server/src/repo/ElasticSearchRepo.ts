@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {Article, ArticleBulkResult, ArticleSource} from '../domain/Article';
-import {Client} from '@elastic/elasticsearch';
+import { Injectable } from '@nestjs/common';
+import { Article, ArticleBulkResult, ArticleSource } from '../domain/Article';
+import { Client } from '@elastic/elasticsearch';
 
 @Injectable()
 export class ElasticSearchRepo {
