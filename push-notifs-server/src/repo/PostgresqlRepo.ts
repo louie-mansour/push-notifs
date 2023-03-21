@@ -1,7 +1,7 @@
 import { User } from '../domain/User';
 import { Pool } from 'pg';
 import { DatabaseError } from '../error/DatabaseError';
-import { Injectable } from '@nestjs/common';
+import { NotFoundError } from '../error/NotFoundError';
 
 interface PostgresConfig {
   user: string;
@@ -11,7 +11,6 @@ interface PostgresConfig {
   port: number;
 }
 
-@Injectable()
 export class PostgresqlRepo {
   private readonly pool: Pool;
   constructor() {
@@ -43,6 +42,8 @@ export class PostgresqlRepo {
       name: row.name,
       email: row.email,
       phone: row.phone,
+      emailVerified: row.emailVerified,
+      phoneVerified: row.phoneVerified,
       keywords: row.keywords,
     });
   }
@@ -75,6 +76,8 @@ export class PostgresqlRepo {
       name: row.name,
       email: row.email,
       phone: row.phone,
+      emailVerified: row.emailVerified,
+      phoneVerified: row.phoneVerified,
       keywords: row.keywords,
     });
   }
@@ -108,6 +111,8 @@ export class PostgresqlRepo {
       name: row.name,
       email: row.email,
       phone: row.phone,
+      emailVerified: row.emailVerified,
+      phoneVerified: row.phoneVerified,
       keywords: row.keywords,
     });
   }

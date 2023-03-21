@@ -4,4 +4,4 @@ EXPOSE 9229
 WORKDIR /app
 COPY . .
 RUN npm install
-CMD ["npm run start:debug"]
+CMD ["npm run start"]

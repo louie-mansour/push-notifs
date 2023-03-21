@@ -1,11 +1,16 @@
 import { User } from '../domain/User';
 import { PostgresqlRepo } from '../repo/PostgresqlRepo';
-import { Injectable } from '@nestjs/common';
+import { Auth0Service } from '../service/auth/Auth0Service';
 
-@Injectable()
 export class UserUseCase {
-  constructor(private readonly postgresqlRepo: PostgresqlRepo) {}
+  constructor(
+    private readonly auth0Service: Auth0Service,
+    private readonly postgresqlRepo: PostgresqlRepo,
+  ) {}
 
+  public async login(authorizationCode: string): Promise<string> {
+    return await this.auth0Service.exchange(authorizationCode);
+  }
   public async createUser(user: User): Promise<User> {
     return await this.postgresqlRepo.insertUser(user);
   }
@@ -16,7 +21,9 @@ export class UserUseCase {
       id: userInput.id,
       name: userInput.name || existingUser.name,
       email: existingUser.email,
+      emailVerified: userInput.emailVerified || existingUser.emailVerified,
       phone: userInput.phone || existingUser.phone,
+      phoneVerified: userInput.phoneVerified || existingUser.phoneVerified,
       keywords: userInput.keywords || existingUser.keywords,
     });
     return await this.postgresqlRepo.updateUser(updatedUser);

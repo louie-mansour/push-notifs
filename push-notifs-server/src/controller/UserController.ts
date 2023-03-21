@@ -1,13 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { UserUseCase } from '../usecase/UserUseCase';
 import { User } from '../domain/User';
+import express from 'express';
 
-@Controller()
 export class UserController {
   constructor(private readonly userUseCase: UserUseCase) {}
 
-  @Post('/user')
-  async createUser(@Body('user') user): Promise<User> {
+  async createUser(req: express.Request): Promise<User> {
+    const user = req.body.user;
     const newUser = new User({
       ...user,
       id: undefined,
@@ -15,8 +14,9 @@ export class UserController {
     return await this.userUseCase.createUser(newUser);
   }
 
-  @Put('/user/:id')
-  async updateUser(@Param('id') userId, @Body('user') user): Promise<User> {
+  async updateUser(req: express.Request): Promise<User> {
+    const user = req.body.user;
+    const userId = req.params.id;
     const newUser = new User({
       ...user,
       id: userId,
@@ -24,8 +24,8 @@ export class UserController {
     return await this.userUseCase.updateUser(newUser);
   }
 
-  @Get('/user/:id')
-  async getUser(@Param('id') userId): Promise<User> {
+  async getUser(req: express.Request): Promise<User> {
+    const userId = req.params.userId;
     return await this.userUseCase.getUser(userId);
   }
 }

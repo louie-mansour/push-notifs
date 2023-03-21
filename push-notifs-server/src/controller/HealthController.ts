@@ -1,9 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import express from 'express';
 
-@Controller()
 export class HealthController {
-  @Get('/health')
-  health(): string {
-    return 'ok';
+  health(req: express.Request, res: express.Response) {
+    res.send('ok');
   }
 }

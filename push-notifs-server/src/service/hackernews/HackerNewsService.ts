@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { Article, ArticleSource } from '../domain/Article';
+import { Article, ArticleSource } from '../../domain/Article';
 
-@Injectable()
 export default class HackerNewsService {
   public async getTopNArticles(n: number): Promise<Article[]> {
     let articleIds: string[];

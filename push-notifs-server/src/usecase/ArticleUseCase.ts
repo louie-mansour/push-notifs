@@ -1,10 +1,7 @@
-import { User } from '../domain/User';
-import { Injectable } from '@nestjs/common';
-import HackerNewsService from '../service/HackerNewsService';
+import HackerNewsService from '../service/hackernews/HackerNewsService';
 import { ElasticSearchRepo } from '../repo/ElasticSearchRepo';
 import { ArticleBulkResult } from '../domain/Article';
 
-@Injectable()
 export class ArticleUseCase {
   constructor(
     private readonly hackerNewsService: HackerNewsService,

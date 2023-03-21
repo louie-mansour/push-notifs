@@ -10,7 +10,7 @@ services:
     ports:
       - "4000:4000"
       - "9229:9229"
-    command: "npm run start:debug"
+    command: "npm run start"
     restart: always
     environment:
       DB_HOST: db
