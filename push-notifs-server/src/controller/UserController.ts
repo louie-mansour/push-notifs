@@ -5,14 +5,14 @@ import express from 'express';
 export class UserController {
   constructor(private readonly userUseCase: UserUseCase) {}
 
-  async createUser(req: express.Request): Promise<User> {
-    const user = req.body.user;
-    const newUser = new User({
-      ...user,
-      id: undefined,
-    });
-    return await this.userUseCase.createUser(newUser);
-  }
+  // async createUser(req: express.Request): Promise<User> {
+  //   const user = req.body.user;
+  //   const newUser = new User({
+  //     ...user,
+  //     id: undefined,
+  //   });
+  //   return await this.userUseCase.createUser(newUser);
+  // }
 
   async updateUser(req: express.Request): Promise<User> {
     const user = req.body.user;

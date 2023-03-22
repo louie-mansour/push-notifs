@@ -9,11 +9,15 @@ export class UserUseCase {
   ) {}
 
   public async login(authorizationCode: string): Promise<string> {
-    return await this.auth0Service.exchange(authorizationCode);
+    const { accessToken, user } = await this.auth0Service.exchange(
+      authorizationCode,
+    );
+    await this.postgresqlRepo.insertUser(user);
+    return accessToken;
   }
-  public async createUser(user: User): Promise<User> {
-    return await this.postgresqlRepo.insertUser(user);
-  }
+  // public async createUser(user: User): Promise<User> {
+  //   return await this.postgresqlRepo.insertUser(user);
+  // }
 
   public async updateUser(userInput: User): Promise<User> {
     const existingUser = await this.postgresqlRepo.readUser(userInput.id);

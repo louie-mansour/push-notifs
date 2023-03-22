@@ -56,9 +56,10 @@ export class PostgresqlRepo {
     try {
       res = await this.pool.query(this.INSERT_USER_SQL, [
         user.id,
-        user.name,
         user.email,
+        user.emailVerified,
         user.phone,
+        user.phoneVerified,
         user.keywords,
         now,
         now,
@@ -81,8 +82,9 @@ export class PostgresqlRepo {
       keywords: row.keywords,
     });
   }
-  private INSERT_USER_SQL = `INSERT INTO users (id, name, email, phone, keywords, created_datetime, modified_datetime)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+  private INSERT_USER_SQL = `INSERT INTO users (id, email, email_verified, phone, phone_verified, keywords, created_datetime, modified_datetime)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        ON CONFLICT (email) DO NOTHING
         RETURNING *;`;
 
   public async updateUser(user: User): Promise<User> {

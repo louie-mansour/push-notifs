@@ -12,7 +12,7 @@ import { migrate } from 'postgres-migrations';
   };
   try {
     console.log('start');
-    await migrate(dbConfig, './src/postgresql/migrations/');
+    await migrate(dbConfig, './src/migrations/postgresql/');
     console.log('success');
   } catch (e) {
     console.log('error');

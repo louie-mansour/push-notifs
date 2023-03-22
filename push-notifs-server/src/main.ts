@@ -1,6 +1,8 @@
 import * as express from 'express';
 import { AppFactory } from './appFactory';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 
 const { articleController, healthController, userController, authController } =
@@ -21,9 +23,9 @@ app.get('/articles/search', async (req) => {
 });
 
 // Users
-app.post('/user', async (req) => {
-  return await userController.createUser(req);
-});
+// app.post('/user', async (req) => {
+//   return await userController.createUser(req);
+// });
 
 app.put('/user/:userId', async (req) => {
   return await userController.updateUser(req);

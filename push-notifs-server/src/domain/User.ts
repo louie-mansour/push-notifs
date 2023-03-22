@@ -10,13 +10,13 @@ export class User {
   readonly keywords: string[];
   readonly name: string | undefined;
   constructor(user: {
-    id: string | undefined;
+    id?: string;
     email: string;
-    emailVerified: Date | undefined;
-    phone: string | undefined;
-    phoneVerified: Date | undefined;
-    keywords: string[] | undefined;
-    name: string | undefined;
+    emailVerified?: Date;
+    phone?: string;
+    phoneVerified?: Date;
+    keywords?: string[];
+    name?: string;
   }) {
     this.id = user.id || uuidv4();
     this.email = this.validateEmail(user.email);
