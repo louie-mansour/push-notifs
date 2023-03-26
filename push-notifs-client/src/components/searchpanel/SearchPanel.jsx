@@ -10,7 +10,7 @@ export default function SearchPanel(props) {
 
     const performSearch = useCallback(async () => {
         const searchResults = await searchByKeyword(searchTerm)
-        setSearchResults(searchResults.results)
+        setSearchResults(searchResults.articles)
     }, [searchTerm, setSearchResults]);
 
     return (

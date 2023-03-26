@@ -5,17 +5,20 @@ import './App.scss';
 import LeftSidePanel from './components/leftsidepanel/LeftSidePanel.jsx';
 import RightSidePanel from './components/rightsidepanel/RightSidePanel.jsx';
 import MainContent from './components/maincontent/MainContent.jsx';
+import AppWrapper from "./components/AppWrapper";
 
 function App() {
   return (
     <div className="App">
-      <Header />
-      <ContentWrapper>
-        <LeftSidePanel />
-        <MainContent />
-        <RightSidePanel />
-      </ContentWrapper>
-      <Footer />
+      <AppWrapper>
+        <Header />
+        <ContentWrapper>
+          <LeftSidePanel />
+          <MainContent />
+          <RightSidePanel />
+        </ContentWrapper>
+        <Footer />
+      </AppWrapper>
     </div>
   );
 }

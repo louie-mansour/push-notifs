@@ -1,15 +1,18 @@
 import { ArticleUseCase } from '../usecase/ArticleUseCase';
-import { Article, ArticleBulkResult } from '../domain/Article';
 import express from 'express';
 
 export class ArticleController {
-  constructor(private readonly articleUseCase: ArticleUseCase) {}
-  async loadArticles(): Promise<ArticleBulkResult> {
-    return await this.articleUseCase.loadArticles();
-  }
+    constructor(private readonly articleUseCase: ArticleUseCase) {}
+    async loadArticles(req: express.Request, res: express.Response) {
+        const articleBulkResult = await this.articleUseCase.loadArticles();
+        return res.send(articleBulkResult);
+    }
 
-  async searchArticles(req: express.Request): Promise<Article[]> {
-    const query = req.query.q as string;
-    return await this.articleUseCase.searchArticles(query);
-  }
+    async searchArticles(req: express.Request, res: express.Response) {
+        const query = req.query.q as string;
+        const articles = await this.articleUseCase.searchArticles(query);
+        return res.send({
+            articles: articles
+        });
+    }
 }
