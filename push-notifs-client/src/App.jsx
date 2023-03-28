@@ -5,20 +5,57 @@ import './App.scss';
 import LeftSidePanel from './components/leftsidepanel/LeftSidePanel.jsx';
 import RightSidePanel from './components/rightsidepanel/RightSidePanel.jsx';
 import MainContent from './components/maincontent/MainContent.jsx';
-import AppWrapper from "./components/AppWrapper";
+import {UserContext} from "./components/usercontext/UserContext";
+import {getAppInfo} from "./services/appinfo/AppInfoService";
+import {useEffect, useState} from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import UserAccountContent from "./components/useraccountcontent/UserAccountContent";
 
-function App() {
-  return (
-    <div className="App">
-      <AppWrapper>
-        <Header />
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <ContentWrapper>
+        <LeftSidePanel />
+        <MainContent />
+        <RightSidePanel />
+      </ContentWrapper>
+    ),
+  }, {
+    path: "/user/:userId",
+    element: (
         <ContentWrapper>
-          <LeftSidePanel />
-          <MainContent />
+          <RightSidePanel />
+          <UserAccountContent />
           <RightSidePanel />
         </ContentWrapper>
+    )
+  }
+]);
+
+function App() {
+  const [userInfo, setUserInfo] = useState({
+    isLoggedIn: false,
+    userId: 'anon'
+  });
+  useEffect(() => {
+    const fetchAppInfo = async () => {
+      const appInfo = await getAppInfo()
+      setUserInfo(appInfo)
+    }
+    fetchAppInfo()
+        .catch(err => console.log(err))
+  }, [])
+  return (
+    <div className="App">
+      <UserContext.Provider value={userInfo}>
+        <Header />
+        <RouterProvider router={router} />
         <Footer />
-      </AppWrapper>
+      </UserContext.Provider>
     </div>
   );
 }

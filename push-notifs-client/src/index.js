@@ -4,10 +4,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Auth0Provider} from "@auth0/auth0-react";
-// import Login from "./login";
-import Logout from "./logout";
 import config from "./config";
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,9 +18,6 @@ root.render(
           audience={config.auth0.AUDIENCE}
           response_type='code'
       >
-          {/*<a href="https://dev-isnyz8zq.auth0.com/authorize?response_type=code&client_id=ToGq3rWLOjJhBay1i4vDgieN8dlscXHr&redirect_uri=http://localhost:4000/auth/callback&scope=user:edit&audience=http://localhost:4000&state=xyzABC123">Sign In</a>*/}
-          {/*<Login />*/}
-          <Logout />
           <App />
       </Auth0Provider>,
   </React.StrictMode>

@@ -1,0 +1,23 @@
+.UserAccountContent {
+  width: 50%;
+  background-color: white;
+  display: inline-block;
+  float: left;
+
+  &_header {
+    padding: 20px 20px 50px 20px;
+    margin: 0;
+  }
+
+  &_wrapper {
+    border-left: darkgrey 1px solid;
+    border-right: darkgrey 1px solid;
+    border-bottom: darkgrey 1px solid;
+  }
+
+  &_group {
+    display: block;
+    clear: both;
+    margin: 40px 0;
+  }
+}

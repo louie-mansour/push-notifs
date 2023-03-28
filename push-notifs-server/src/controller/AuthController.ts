@@ -15,7 +15,16 @@ export class AuthController {
         return res.redirect('http://localhost:3000');
     }
 
+    async logout(req: express.Request, res: express.Response) {
+        res.clearCookie('accessToken');
+        return res.redirect('http://localhost:3000');
+    }
+
     static AuthHeaderFromCookie(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (req.headers['Authorization']) {
+            return next();
+        }
+
         const cookieHeader = req.header('cookie');
         if (!cookieHeader) {
             return next();

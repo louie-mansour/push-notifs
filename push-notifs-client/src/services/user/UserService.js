@@ -1,3 +1,13 @@
+import axios from 'axios';
+
+export async function userLogout() {
+    try {
+        await axios.put(`/user/logout`);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export async function getUserData(userId) {
     return {
         user: {

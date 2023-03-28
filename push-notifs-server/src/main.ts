@@ -41,6 +41,10 @@ app.get('/articles/search', async (req, res) => {
 //   return await userController.createUser(req);
 // });
 
+app.put('/user/logout', async (req, res) => {
+    return await authController.logout(req, res)
+})
+
 app.put('/user/:userId', async (req) => {
     return await userController.updateUser(req);
 });
