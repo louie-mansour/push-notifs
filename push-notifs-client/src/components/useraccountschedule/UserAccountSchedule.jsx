@@ -2,9 +2,22 @@ import './UserAccountSchedule.scss'
 import {FormControl, FormGroup, FormControlLabel, Checkbox, Button} from "@mui/material";
 import { LocalizationProvider, TimeField } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import * as dayjs from 'dayjs'
 
 export default function UserAccountSchedule(props) {
+    const { schedule, setSchedule } = props
+    if (!schedule) {
+        return (
+            <div className='UserAccountSchedule'>
+                <h2 className='UserAccountSchedule_header'>Notification Schedule</h2>
+                <p className='UserAccountSchedule_description'>
+                    We only send notifications at the selected days and times.
+                </p>
+                <p className='UserAccountSchedule_description'>
+                    If no day or time is selected you won't receive notifications.
+                </p>
+            </div>
+        );
+    }
     return (
         <div className='UserAccountSchedule'>
             <h2 className='UserAccountSchedule_header'>Notification Schedule</h2>
@@ -15,8 +28,14 @@ export default function UserAccountSchedule(props) {
                 If no day or time is selected you won't receive notifications.
             </p>
             <div className='UserAccountSchedule_inputLine'>
-                <UserAccountTimePicker />
-                <UserAccountDayPicker />
+                <UserAccountTimePicker
+                    schedule={schedule}
+                    setSchedule={setSchedule}
+                />
+                <UserAccountDayPicker
+                    schedule={schedule}
+                    setSchedule={setSchedule}
+                />
                 <SaveButton />
             </div>
         </div>
@@ -24,6 +43,7 @@ export default function UserAccountSchedule(props) {
 }
 
 function UserAccountTimePicker(props) {
+    const { schedule, setSchedule} = props;
     return (
         <div className='UserAccountTimePicker'>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -31,55 +51,78 @@ function UserAccountTimePicker(props) {
                     <FormGroup aria-label="notification days" row>
                         <TimeField
                             label="Notification Time"
-                            defaultValue={dayjs('2022-04-12T15:00')}
+                            value={schedule.time}
+                            onChange={(newValue) => onChangeTime(newValue)}
                         />
                     </FormGroup>
                 </FormControl>
             </LocalizationProvider>
         </div>
     );
+
+    function onChangeTime(time) {
+        setSchedule(prev => {
+            return {
+                ...prev,
+                time: time,
+            }
+        })
+    }
 }
 
 function UserAccountDayPicker(props) {
     const DAYS = [
         {
-            key: "Sunday",
+            key: "sunday",
             label: "Sunday"
         },
         {
-            key: "Monday",
+            key: "monday",
             label: "Monday"
         },
         {
-            key: "Tuesday",
+            key: "tuesday",
             label: "Tuesday"
         },
         {
-            key: "Wednesday",
+            key: "wednesday",
             label: "Wednesday"
         },
         {
-            key: "Thursday",
+            key: "thursday",
             label: "Thursday"
         },
         {
-            key: "Friday",
+            key: "friday",
             label: "Friday"
         },
         {
-            key: "Saturday",
+            key: "saturday",
             label: "Saturday"
         }
     ];
+    const { schedule, setSchedule } = props;
     return (
         <div className='UserAccountDayPicker'>
             <FormGroup>
                 { DAYS.map((day) => {
-                    return <FormControlLabel control={<Checkbox defaultChecked />} label={day.key} />
+                    return (
+                        <FormControlLabel
+                            control={<Checkbox checked={schedule[day.key]} />}
+                            label={day.label}
+                            onChange={() => onClickCheckbox(day.key)}
+                        />
+                    )
                 })}
             </FormGroup>
         </div>
     );
+    function onClickCheckbox(day) {
+        setSchedule(s => {
+            s[day] = !s[day]
+            return { ...s };
+        })
+    }
 }
 
 function SaveButton(props) {

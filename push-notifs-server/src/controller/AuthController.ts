@@ -1,27 +1,12 @@
 import { UserUseCase } from '../usecase/UserUseCase';
 import express from 'express';
-
+import jwt_decode from 'jwt-decode';
 
 export class AuthController {
     constructor(private readonly userUseCase: UserUseCase) {}
 
-    async callback(req: express.Request, res: express.Response) {
-        const code = req.query.code as string;
-        const accessToken = await this.userUseCase.login(code);
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-        });
-        return res.redirect('http://localhost:3000');
-    }
-
-    async logout(req: express.Request, res: express.Response) {
-        res.clearCookie('accessToken');
-        return res.redirect('http://localhost:3000');
-    }
-
     static AuthHeaderFromCookie(req: express.Request, res: express.Response, next: express.NextFunction) {
-        if (req.headers['Authorization']) {
+        if (req.headers['authorization']) {
             return next();
         }
 
@@ -38,7 +23,27 @@ export class AuthController {
             return next();
         }
         const authCookieValue = authCookieKeyValue[1]
-        req.headers['Authorization'] = `Bearer ${authCookieValue}`;
+        req.headers['authorization'] = `bearer ${authCookieValue}`;
+        return next();
+    }
+
+    static XUserIdFromAuthHeader(req: express.Request, res: express.Response, next: express.NextFunction) {
+        const authHeader = req.headers['authorization'] as string
+        if (!authHeader) {
+            req.headers['X-User-Id'] = undefined;
+            return next();
+        }
+
+        const accessTokenValues = authHeader.split(' ', 2)
+        if (accessTokenValues.length !== 2) {
+            req.headers['X-User-Id'] = undefined;
+            return next();
+        }
+
+        const accessToken = accessTokenValues[1]
+        const decodedAccessTokenToken = jwt_decode(accessToken) as any;
+        const userId = decodedAccessTokenToken.push_notifs_uuid;
+        req.headers['X-User-Id'] = userId;
         return next();
     }
 }

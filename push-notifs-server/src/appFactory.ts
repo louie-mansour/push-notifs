@@ -14,7 +14,6 @@ import { AppInfoUseCase } from "./usecase/AppInfoUseCase";
 export class AppFactory {
     public static create(): {
         articleController: ArticleController;
-        authController: AuthController;
         userController: UserController;
         healthController: HealthController;
         appInfoController: AppInfoController;
@@ -38,7 +37,6 @@ export class AppFactory {
         // controllers
         return {
             articleController: new ArticleController(articleUseCase),
-            authController: new AuthController(userUseCase),
             userController: new UserController(userUseCase),
             healthController: new HealthController(),
             appInfoController: new AppInfoController(appInfoUseCase),

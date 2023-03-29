@@ -6,7 +6,7 @@ import { AuthController } from "./controller/AuthController";
 
 dotenv.config();
 
-const { articleController, healthController, userController, authController, appInfoController } =
+const { articleController, healthController, userController, appInfoController } =
     AppFactory.create();
 
 const checkJwt = auth({
@@ -17,8 +17,9 @@ const checkJwt = auth({
 
 const app = express();
 app.use(AuthController.AuthHeaderFromCookie);
+app.use(AuthController.XUserIdFromAuthHeader);
 
-app.get('/health', (req, res) => {
+app.get('/health', checkJwt, (req, res) => {
     return healthController.health(req, res);
 });
 
@@ -37,26 +38,17 @@ app.get('/articles/search', async (req, res) => {
 });
 
 // Users
-// app.post('/user', async (req) => {
-//   return await userController.createUser(req);
-// });
+app.get('/auth/callback', async (req, res) => {
+    return await userController.loginCallback(req, res);
+});
+
+app.get('/user', checkJwt, async (req, res) => {
+    return await userController.getUser(req, res);
+});
 
 app.put('/user/logout', async (req, res) => {
-    return await authController.logout(req, res)
+    return await userController.logout(req, res)
 })
-
-app.put('/user/:userId', async (req) => {
-    return await userController.updateUser(req);
-});
-
-app.get('/user/:userId', async (req) => {
-    return await userController.getUser(req);
-});
-
-// Auth
-app.get('/auth/callback', async (req, res) => {
-    return await authController.callback(req, res);
-});
 
 // Begin
 app.listen(4000);

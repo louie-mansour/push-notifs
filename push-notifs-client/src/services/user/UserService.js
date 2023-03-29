@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as dayjs from 'dayjs'
 
 export async function userLogout() {
     try {
@@ -8,26 +9,15 @@ export async function userLogout() {
     }
 }
 
-export async function getUserData(userId) {
-    return {
-        user: {
-            id: userId,
-            schedule: {
-                time: '12:00pm Eastern',
-                day: 'Every day',
-            },
-            contact: {
-                email: 'address@example.com',
-                phone: '+1 (123) 456 - 7890',
-            },
-            keywords: [
-                'JavaScript',
-                'Kotlin',
-                'Java',
-                'TypeScript',
-                'React',
-                'Elixir',
-            ],
-        },
+export async function getUser() {
+    let response;
+    try {
+        response = await axios.get('/user');
+    } catch (e) {
+        if (e.response.status === 401) {
+            return { isAnonymous: true }
+        }
     }
+    response.data.user.schedule["time"] = dayjs(response.data.user.schedule.time)
+    return response.data;
 }

@@ -1,31 +1,56 @@
 import { UserUseCase } from '../usecase/UserUseCase';
-import { User } from '../domain/User';
 import express from 'express';
+import { Schedule } from "../domain/User";
 
 export class UserController {
     constructor(private readonly userUseCase: UserUseCase) {}
 
-    // async createUser(req: express.Request): Promise<User> {
-    //   const user = req.body.user;
-    //   const newUser = new User({
-    //     ...user,
-    //     id: undefined,
-    //   });
-    //   return await this.userUseCase.createUser(newUser);
-    // }
-
-    async updateUser(req: express.Request): Promise<User> {
-        const user = req.body.user;
-        const userId = req.params.id;
-        const newUser = new User({
-            ...user,
-            id: userId,
+    async loginCallback(req: express.Request, res: express.Response) {
+        const code = req.query.code as string;
+        const { accessToken, user } = await this.userUseCase.login(code);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: true,
         });
-        return await this.userUseCase.updateUser(newUser);
+        return res.redirect(`http://localhost:3000/user/${user.id}`);
     }
 
-    async getUser(req: express.Request): Promise<User> {
-        const userId = req.params.userId;
-        return await this.userUseCase.getUser(userId);
+    async logout(req: express.Request, res: express.Response) {
+        res.clearCookie('accessToken');
+        return res.redirect('http://localhost:3000');
     }
+
+    async getUser(req: express.Request, res: express.Response) {
+        const userId = req.headers['X-User-Id'] as string;
+        const user = await this.userUseCase.getUser(userId);
+        return res.send({
+            isAnonymous: false,
+            user: {
+                id: user.id,
+                contact: {
+                    email: user.contact.email,
+                    isEmailVerified: !!user.contact.emailVerified,
+                    isEmailEnabled: user.contact.isEmailEnabled,
+                    phone: user.contact.phone,
+                    isPhoneVerified: !!user.contact.phoneVerified,
+                    isPhoneEnabled: user.contact.isPhoneEnabled,
+                },
+                schedule: user.schedule,
+                keywords: user.keywords,
+            }
+        });
+    }
+}
+interface ContactResponseDto {
+    readonly email: string;
+    readonly isEmailVerified: boolean;
+    readonly phone: string | undefined;
+    readonly isPhoneVerified: boolean;
+}
+
+interface UserResponseDto {
+    readonly id: string;
+    readonly contact: ContactResponseDto;
+    readonly schedule: Schedule;
+    readonly keywords: string[];
 }

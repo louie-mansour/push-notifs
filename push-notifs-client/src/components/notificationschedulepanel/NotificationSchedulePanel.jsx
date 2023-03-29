@@ -7,11 +7,11 @@ export default function NotificationSchedulePanel(props) {
             <h3 className='NotificationSchedulePanel_header'>Notify me at</h3>
             <NotificationSchedule
                 icon={<Schedule />}
-                data={props.schedule.time}
+                data={props.schedule?.time || 'mock'}
             />
             <NotificationSchedule
                 icon={<CalendarMonth />}
-                data={props.schedule.day}
+                data={props.schedule?.day || 'mock'}
             />
         </div>
     )

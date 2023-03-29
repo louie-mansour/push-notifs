@@ -21,7 +21,7 @@ function Navigation(props) {
     const user = useContext(UserContext);
 
     let account;
-    if (user.isLoggedIn) {
+    if (user && user.isLoggedIn) {
         account = <Tab icon={<Person />} label='sign out' value='sign_out' />
     } else {
         account = <Tab icon={<Person />} label='sign in' value='sign_in' />
