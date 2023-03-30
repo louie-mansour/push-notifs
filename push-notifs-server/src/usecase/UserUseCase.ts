@@ -50,6 +50,10 @@ export class UserUseCase {
     }
 
     public async enablePhone(userId: string, isEnable: boolean): Promise<Contact> {
+        const user = await this.postgresqlRepo.getUser(userId)
+        if (!user.contact.phoneVerified) {
+            throw new InvalidOperationError(`Cannot enable unverified phone ${user.contact.phone} for user ${user.id}`)
+        }
         return await this.postgresqlRepo.enablePhone(userId, isEnable);
     }
 
