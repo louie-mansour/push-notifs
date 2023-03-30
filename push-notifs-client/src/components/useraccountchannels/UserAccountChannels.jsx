@@ -1,6 +1,7 @@
 import "./UserAccountChannels.scss";
-import {Button, TextField, FormGroup, FormControlLabel, Switch} from "@mui/material";
-import {useState} from "react";
+import {Button, FormControlLabel, FormGroup, Switch, TextField} from "@mui/material";
+import {useCallback, useState} from "react";
+import {changeEmail, changePhone} from "../../services/user/UserService";
 
 export default function UserAccountChannels(props) {
     const { contact, setContact } = props;
@@ -58,29 +59,43 @@ function UserAccountVerifiableTextField(props) {
     const verifiedState = 'verified'
     const enabledState = 'enabled'
 
-    const { label, value, isVerified, setContact } = props;
+    const { label, value, isVerified, setContact, type } = props;
 
-    let initState;
+    let initLifecycleState;
     if (!value) {
-        initState = editState
+        initLifecycleState = editState
     } else if (!isVerified) {
-        initState = savedStated
+        initLifecycleState = savedStated
     } else if (!props.isEnabled) {
-        initState = verifiedState
+        initLifecycleState = verifiedState
     } else {
-        initState = enabledState
+        initLifecycleState = enabledState
     }
 
-    const [state, setState] = useState(initState);
+    const [lifecycleState, setLifecycleState] = useState(initLifecycleState);
+    const [text, setText] = useState(value ?? '');
+    const changeEmailCallback = useCallback(async () => {
+        const responseData = await changeEmail(text)
+        const contact = responseData.contact;
+        setContact(contact);
+    }, [text, setContact])
+
+    const changePhoneCallback = useCallback(async () => {
+        const responseData = await changePhone(text)
+        const contact = responseData.contact;
+        setContact(contact);
+    }, [text, setContact])
 
     let textField
-    if (state === editState) {
+    if (lifecycleState === editState) {
         textField = <TextField
             fullWidth
             id="standard-basic"
             label={label}
             variant="standard"
-            defaultValue={value ?? ''}
+            value={text}
+            onChange={onChangeInput}
+            onKeyUp={onKeyupInput}
         />
     } else {
         textField = <TextField
@@ -89,16 +104,16 @@ function UserAccountVerifiableTextField(props) {
             id="standard-basic"
             label={props.label}
             variant="standard"
-            defaultValue={value}
+            value={value}
         />
     }
 
     let saveButton;
-    if (state === editState) {
+    if (lifecycleState === editState) {
         saveButton = (
             <Button
                 variant="contained"
-                onClick={() => { setState(savedStated); }}
+                onClick={() => { onClickSaveButton(type); }}
             >
                 Save
             </Button>
@@ -107,7 +122,7 @@ function UserAccountVerifiableTextField(props) {
         saveButton = (
             <Button
                 variant="contained"
-                onClick={() => { setState(editState); }}
+                onClick={() => { setLifecycleState(editState); }}
             >
                 Edit
             </Button>
@@ -115,16 +130,16 @@ function UserAccountVerifiableTextField(props) {
     }
 
     let verificationButton;
-    if (state === savedStated) {
+    if (lifecycleState === savedStated) {
         verificationButton = <Button variant="contained">Resend Verification</Button>
-    } else if (state === verifiedState || enabledState) {
+    } else if (lifecycleState === verifiedState || enabledState) {
         verificationButton = <Button disabled variant="contained">Verified :)</Button>
     } else {
         verificationButton = <Button disabled variant="contained">Resend Verification</Button>
     }
 
     let switchToggle;
-    if (state === editState || state === savedStated) {
+    if (lifecycleState === editState || lifecycleState === savedStated) {
         switchToggle =
             (
                 <FormGroup>
@@ -167,6 +182,36 @@ function UserAccountVerifiableTextField(props) {
             </div>
         </div>
     )
+
+    function onChangeInput(e) {
+        setText(e.target.value);
+    }
+
+    function onKeyupInput(e) {
+        if (e.keyCode === 13) {
+            onClickSaveButton()
+        }
+    }
+
+    function onClickSaveButton(type) {
+        setLifecycleState(savedStated)
+        if (type === 'sms') {
+            setContact(c => {
+                return {
+                    ...c,
+                    phone: text,
+                }
+            })
+            return changePhoneCallback()
+        }
+        setContact(c => {
+            return {
+                ...c,
+                email: text,
+            }
+        })
+        changeEmailCallback()
+    }
 
     function onToggleSwitch(type) {
         if (type === 'sms') {
