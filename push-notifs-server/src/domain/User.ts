@@ -50,7 +50,7 @@ export class User {
 
 export class Contact {
     readonly userId: string;
-    readonly email: string;
+    readonly email: string | undefined;
     readonly emailVerified: Date | undefined;
     readonly isEmailEnabled: boolean;
     readonly phone: string | undefined;
@@ -59,7 +59,7 @@ export class Contact {
 
     constructor(contact: {
         userId: string;
-        email: string;
+        email?: string;
         emailVerified?: Date;
         isEmailEnabled?: boolean;
         phone?: string;
@@ -76,6 +76,9 @@ export class Contact {
     }
 
     private validateEmail(email: string): string {
+        if (!email) {
+            return undefined;
+        }
         if (!Contact.emailRegex.test(email)) {
             throw new InvalidInputError(
                 `email '${email}' does not follow regex pattern '${Contact.emailRegexPattern}'`,

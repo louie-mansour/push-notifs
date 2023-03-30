@@ -16,10 +16,11 @@ const checkJwt = auth({
 
 
 const app = express();
+app.use(express.json());
 app.use(AuthController.AuthHeaderFromCookie);
 app.use(AuthController.XUserIdFromAuthHeader);
 
-app.get('/health', checkJwt, (req, res) => {
+app.get('/health', (req, res) => {
     return healthController.health(req, res);
 });
 
@@ -46,8 +47,32 @@ app.get('/user', checkJwt, async (req, res) => {
     return await userController.getUser(req, res);
 });
 
-app.put('/user/logout', async (req, res) => {
+app.put('/user/logout', checkJwt, async (req, res) => {
     return await userController.logout(req, res)
+})
+
+app.put('/user/email', checkJwt, async (req, res) => {
+    return await userController.changeEmail(req, res)
+})
+
+app.put('/user/email/enable/:isEnable', checkJwt, async (req, res) => {
+    return await userController.enableEmail(req, res)
+})
+
+app.put('/user/phone', checkJwt, async (req, res) => {
+    return await userController.changePhone(req, res)
+})
+
+app.put('/user/phone/enable/:isEnable', checkJwt, async (req, res) => {
+    return await userController.enablePhone(req, res)
+})
+
+app.put('/user/schedule', checkJwt, async (req, res) => {
+    return await userController.setSchedule(req, res)
+})
+
+app.put('/user/keywords', checkJwt, async (req, res) => {
+    return await userController.setKeywords(req, res)
 })
 
 // Begin
