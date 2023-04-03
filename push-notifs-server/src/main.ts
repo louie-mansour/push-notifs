@@ -55,12 +55,20 @@ app.put('/user/email', checkJwt, async (req, res) => {
     return await userController.changeEmail(req, res)
 })
 
+app.post('/user/email/verify', checkJwt, async (req, res) => {
+    return await userController.verifyEmail(req, res)
+})
+
 app.put('/user/email/enable/:isEnable', checkJwt, async (req, res) => {
     return await userController.enableEmail(req, res)
 })
 
 app.put('/user/phone', checkJwt, async (req, res) => {
     return await userController.changePhone(req, res)
+})
+
+app.post('/user/phone/verify', checkJwt, async (req, res) => {
+    return await userController.verifyPhone(req, res)
 })
 
 app.put('/user/phone/enable/:isEnable', checkJwt, async (req, res) => {

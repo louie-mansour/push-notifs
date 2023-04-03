@@ -1,9 +1,11 @@
 import { UserUseCase } from '../usecase/UserUseCase';
 import express from 'express';
 import { Contact, Schedule, User } from "../domain/User";
+import { SendGridService } from "../service/sendgrid/SendGridService";
 
 export class UserController {
-    constructor(private readonly userUseCase: UserUseCase) {}
+    constructor(
+        private readonly userUseCase: UserUseCase) {}
 
     async loginCallback(req: express.Request, res: express.Response) {
         const code = req.query.code as string;
@@ -39,6 +41,16 @@ export class UserController {
         });
     }
 
+    async verifyEmail(req: express.Request, res: express.Response) {
+        const userId = req.headers['X-User-Id'] as string;
+        const verificationCode = req.body.verification_code;
+        const contact = await this.userUseCase.verifyEmail(userId, verificationCode)
+
+        return res.send({
+            contact: this.contactToDto(contact)
+        });
+    }
+
     async enableEmail(req: express.Request, res: express.Response) {
         const userId = req.headers['X-User-Id'] as string;
         const isEnable = req.param('isEnable').toLowerCase() === 'true'
@@ -53,6 +65,16 @@ export class UserController {
         const userId = req.headers['X-User-Id'] as string;
         const email = req.body.phone;
         const contact = await this.userUseCase.changePhone(userId, email);
+
+        return res.send({
+            contact: this.contactToDto(contact)
+        });
+    }
+
+    async verifyPhone(req: express.Request, res: express.Response) {
+        const userId = req.headers['X-User-Id'] as string;
+        const verificationCode = req.body.verification_code;
+        const contact = await this.userUseCase.verifyPhone(userId, verificationCode)
 
         return res.send({
             contact: this.contactToDto(contact)

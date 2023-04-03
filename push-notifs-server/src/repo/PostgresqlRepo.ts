@@ -52,11 +52,11 @@ export class PostgresqlRepo {
     }
 
     private CHANGE_USER_EMAIL_SQL =
-        `UPDATE users SET (email, email_verified, is_email_enabled, modified_datetime)
-        = ($1, $2, $3, $4)
-        WHERE id = $5
+        `UPDATE users SET (email, email_verified, is_email_enabled, email_verification_code, modified_datetime)
+        = ($1, $2, $3, $4, $5)
+        WHERE id = $6
         RETURNING *;`;
-    public async changeEmail(contact: Contact): Promise<Contact> {
+    public async changeEmail(contact: Contact, verificationCode: string): Promise<Contact> {
         const { userId, email, emailVerified, isEmailEnabled } = contact;
         const res = await this.query(
             this.CHANGE_USER_EMAIL_SQL,
@@ -64,10 +64,32 @@ export class PostgresqlRepo {
                 email,
                 emailVerified,
                 isEmailEnabled,
+                verificationCode,
                 new Date(),
                 userId
             ]
         )
+        const row = res.rows[0];
+        return this.rowToContact(row);
+    }
+
+    private VERIFY_USER_EMAIL_SQL =
+        `UPDATE users SET (email_verified, modified_datetime)
+        = ($1, $2)
+        WHERE id = $3 AND email_verification_code = $4
+        RETURNING *;`;
+    public async verifyEmail(userId: string, verificationCode: string): Promise<Contact> {
+        const now = new Date();
+        const res = await this.query(
+            this.VERIFY_USER_EMAIL_SQL,
+            [
+                now,
+                now,
+                userId,
+                verificationCode,
+            ]
+        )
+        // TODO: Count the rows updated
         const row = res.rows[0];
         return this.rowToContact(row);
     }
@@ -84,11 +106,11 @@ export class PostgresqlRepo {
     }
 
     private CHANGE_USER_PHONE_SQL =
-        `UPDATE users SET (phone, phone_verified, is_phone_enabled, modified_datetime)
-        = ($1, $2, $3, $4)
-        WHERE id = $5
+        `UPDATE users SET (phone, phone_verified, is_phone_enabled, phone_verification_code, modified_datetime)
+        = ($1, $2, $3, $4, $5)
+        WHERE id = $6
         RETURNING *;`;
-    public async changePhone(contact: Contact): Promise<Contact> {
+    public async changePhone(contact: Contact, verificationCode: string): Promise<Contact> {
         const { userId, phone, phoneVerified, isPhoneEnabled } = contact;
         const res = await this.query(
             this.CHANGE_USER_PHONE_SQL,
@@ -96,10 +118,32 @@ export class PostgresqlRepo {
                 phone,
                 phoneVerified,
                 isPhoneEnabled,
+                verificationCode,
                 new Date(),
                 userId,
             ]
         )
+        const row = res.rows[0];
+        return this.rowToContact(row);
+    }
+
+    private VERIFY_USER_PHONE_SQL =
+        `UPDATE users SET (phone_verified, modified_datetime)
+        = ($1, $2)
+        WHERE id = $3 AND phone_verification_code = $4
+        RETURNING *;`;
+    public async verifyPhone(userId: string, verificationCode: string): Promise<Contact> {
+        const now = new Date();
+        const res = await this.query(
+            this.VERIFY_USER_PHONE_SQL,
+            [
+                now,
+                now,
+                userId,
+                verificationCode,
+            ]
+        )
+        // TODO: Count the rows updated
         const row = res.rows[0];
         return this.rowToContact(row);
     }
@@ -175,7 +219,7 @@ export class PostgresqlRepo {
         const scheduleData = row.schedule;
         return new Schedule({
             userId: row.id,
-            time: scheduleData.time,
+            time: new Date(scheduleData.time),
             sunday: scheduleData.sunday,
             monday: scheduleData.monday,
             tuesday: scheduleData.tuesday,

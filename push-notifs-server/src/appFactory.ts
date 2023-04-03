@@ -10,6 +10,8 @@ import { UserController } from './controller/UserController';
 import { HealthController } from './controller/HealthController';
 import { AppInfoController } from "./controller/AppInfoController";
 import { AppInfoUseCase } from "./usecase/AppInfoUseCase";
+import { SendGridService } from "./service/sendgrid/SendGridService";
+import { TwilioService } from "./service/twilio/TwilioService";
 
 export class AppFactory {
     public static create(): {
@@ -25,13 +27,15 @@ export class AppFactory {
         // service layer
         const auth0Service = new Auth0Service();
         const hackerNewsService = new HackerNewsService();
+        const sendGridService = new SendGridService();
+        const twilioService = new TwilioService()
 
         // usecase layer
         const articleUseCase = new ArticleUseCase(
             hackerNewsService,
             elasticSearchRepo,
         );
-        const userUseCase = new UserUseCase(auth0Service, postgresqlRepo);
+        const userUseCase = new UserUseCase(auth0Service, postgresqlRepo, sendGridService, twilioService);
         const appInfoUseCase = new AppInfoUseCase();
 
         // controllers

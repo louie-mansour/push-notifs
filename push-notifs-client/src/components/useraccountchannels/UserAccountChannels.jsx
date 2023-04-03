@@ -132,7 +132,7 @@ function UserAccountVerifiableTextField(props) {
     let verificationButton;
     if (lifecycleState === savedStated) {
         verificationButton = <Button variant="contained">Resend Verification</Button>
-    } else if (lifecycleState === verifiedState || enabledState) {
+    } else if (lifecycleState === verifiedState || lifecycleState === enabledState) {
         verificationButton = <Button disabled variant="contained">Verified :)</Button>
     } else {
         verificationButton = <Button disabled variant="contained">Resend Verification</Button>
