@@ -34,12 +34,56 @@ export async function changeEmail(email) {
     return response.data;
 }
 
+export async function verifyEmailCode(code) {
+    let response;
+    try {
+        response = await axios.post('/user/email/verify', {
+            verification_code: code,
+        });
+    } catch (e) {
+        console.log(e);
+    }
+    return response.data;
+}
+
+export async function enableEmailNotifications(isEnable) {
+    let response;
+    try {
+        response = await axios.put(`/user/email/enable/${isEnable}`);
+    } catch (e) {
+        console.log(e);
+    }
+    return response.data;
+}
+
 export async function changePhone(phone) {
     let response;
     try {
         response = await axios.put('/user/phone', {
             phone: phone,
         });
+    } catch (e) {
+        console.log(e);
+    }
+    return response.data;
+}
+
+export async function verifyPhoneCode(code) {
+    let response;
+    try {
+        response = await axios.post('/user/phone/verify', {
+            verification_code: code,
+        });
+    } catch (e) {
+        console.log(e);
+    }
+    return response.data;
+}
+
+export async function enablePhoneNotifications(isEnable) {
+    let response;
+    try {
+        response = await axios.put(`/user/phone/enable/${isEnable}`);
     } catch (e) {
         console.log(e);
     }

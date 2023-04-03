@@ -1,7 +1,7 @@
 import "./UserAccountChannels.scss";
 import {Button, FormControlLabel, FormGroup, Switch, TextField} from "@mui/material";
 import {useCallback, useState} from "react";
-import {changeEmail, changePhone} from "../../services/user/UserService";
+import {changeEmail, changePhone, verifyEmailCode, verifyPhoneCode} from "../../services/user/UserService";
 
 export default function UserAccountChannels(props) {
     const { contact, setContact } = props;
@@ -73,18 +73,28 @@ function UserAccountVerifiableTextField(props) {
     }
 
     const [lifecycleState, setLifecycleState] = useState(initLifecycleState);
-    const [text, setText] = useState(value ?? '');
+    const [inputText, setInputText] = useState(value ?? '');
+    const [confirmationCode, setConfirmationCode] = useState(undefined);
     const changeEmailCallback = useCallback(async () => {
-        const responseData = await changeEmail(text)
+        const responseData = await changeEmail(inputText)
         const contact = responseData.contact;
         setContact(contact);
-    }, [text, setContact])
+    }, [inputText, setContact])
 
+    const verifyEmailCallback = useCallback(async () => {
+        const responseData = await verifyEmailCode(confirmationCode)
+        setLifecycleState(verifiedState)
+    })
     const changePhoneCallback = useCallback(async () => {
-        const responseData = await changePhone(text)
+        const responseData = await changePhone(inputText)
         const contact = responseData.contact;
         setContact(contact);
-    }, [text, setContact])
+    }, [inputText, setContact])
+
+    const verifyPhoneCallback = useCallback(async () => {
+        const responseData = await verifyPhoneCode(confirmationCode)
+        setLifecycleState(verifiedState)
+    })
 
     let textField
     if (lifecycleState === editState) {
@@ -93,9 +103,9 @@ function UserAccountVerifiableTextField(props) {
             id="standard-basic"
             label={label}
             variant="standard"
-            value={text}
-            onChange={onChangeInput}
-            onKeyUp={onKeyupInput}
+            value={inputText}
+            onChange={onChangeTextInput}
+            onKeyUp={onKeyupTextInput}
         />
     } else {
         textField = <TextField
@@ -129,13 +139,69 @@ function UserAccountVerifiableTextField(props) {
         )
     }
 
-    let verificationButton;
+    let resendVerificationButton;
     if (lifecycleState === savedStated) {
-        verificationButton = <Button variant="contained">Resend Verification</Button>
-    } else if (lifecycleState === verifiedState || lifecycleState === enabledState) {
-        verificationButton = <Button disabled variant="contained">Verified :)</Button>
+        resendVerificationButton = (
+            <Button
+                variant="contained"
+                onClick={() => { onClickSaveButton(type); }}
+            >
+                Resend Verification
+            </Button>)
     } else {
-        verificationButton = <Button disabled variant="contained">Resend Verification</Button>
+        resendVerificationButton = (
+            <Button
+                disabled
+                variant="contained"
+            >
+                Resend Verification
+            </Button>)
+    }
+
+    let verificationInput;
+    if (lifecycleState === savedStated) {
+        verificationInput = (
+            <TextField
+                fullWidth
+                id="standard-basic"
+                label={'Confirmation code'}
+                variant="standard"
+                value={confirmationCode}
+                onChange={onChangeVerificationInput}
+                onKeyUp={onKeyupVerificationInput}
+            />
+        )
+    } else {
+        verificationInput = (
+            <TextField
+                fullWidth
+                disabled
+                id="standard-basic"
+                label={'Confirmation code'}
+                variant="standard"
+                value={''}
+            />
+        )
+    }
+
+    let confirmVerificationButton;
+    if (lifecycleState === savedStated) {
+        confirmVerificationButton = (
+            <Button
+                variant="contained"
+                onClick={() => { onClickConfirmVerificationButton(type); }}
+            >
+                Confirm Verification
+            </Button>
+        )
+    } else {
+        confirmVerificationButton = (
+            <Button
+                disabled
+                variant="contained"
+            >
+                Confirm Verification
+            </Button>)
     }
 
     let switchToggle;
@@ -160,7 +226,7 @@ function UserAccountVerifiableTextField(props) {
                         control={
                             <Switch
                                 checked={props.isEnabled}
-                                onChange={() => onToggleSwitch('')}
+                                onChange={() => onToggleSwitch(type)}
                             />}
                         label="Notify" />
                 </FormGroup>
@@ -175,7 +241,13 @@ function UserAccountVerifiableTextField(props) {
                 {saveButton}
             </div>
             <div className='UserAccountVerifiableTextField_button'>
-                {verificationButton}
+                {resendVerificationButton}
+            </div>
+            <div className='UserAccountVerifiableTextField_input'>
+                {verificationInput}
+            </div>
+            <div className='UserAccountVerifiableTextField_button'>
+                {confirmVerificationButton}
             </div>
             <div className='UserAccountVerifiableTextField_switch'>
                 {switchToggle}
@@ -183,11 +255,11 @@ function UserAccountVerifiableTextField(props) {
         </div>
     )
 
-    function onChangeInput(e) {
-        setText(e.target.value);
+    function onChangeTextInput(e) {
+        setInputText(e.target.value);
     }
 
-    function onKeyupInput(e) {
+    function onKeyupTextInput(e) {
         if (e.keyCode === 13) {
             onClickSaveButton()
         }
@@ -199,7 +271,7 @@ function UserAccountVerifiableTextField(props) {
             setContact(c => {
                 return {
                     ...c,
-                    phone: text,
+                    phone: inputText,
                 }
             })
             return changePhoneCallback()
@@ -207,10 +279,27 @@ function UserAccountVerifiableTextField(props) {
         setContact(c => {
             return {
                 ...c,
-                email: text,
+                email: inputText,
             }
         })
         changeEmailCallback()
+    }
+
+    function onChangeVerificationInput(e) {
+        setConfirmationCode(e.target.value)
+    }
+
+    function onKeyupVerificationInput(e) {
+        if (e.keyCode === 13) {
+            onClickSaveButton()
+        }
+    }
+
+    function onClickConfirmVerificationButton(type) {
+        if (type === 'sms') {
+            verifyPhoneCallback()
+        }
+        verifyEmailCallback()
     }
 
     function onToggleSwitch(type) {
